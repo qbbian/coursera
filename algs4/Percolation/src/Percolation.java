@@ -35,12 +35,11 @@ public class Percolation {
         int q = 0;
 
         if (i == 1) {
-            uf.union(p, q);
+            uf.union(p, 0);
         }
 
         if (i == N) {
-            q = N * N + 1;
-            uf.union(p, q);
+            uf.union(p, N * N + 1);
         }
 
         if ((j > 1) && isOpen(i, j - 1)) {
@@ -82,7 +81,7 @@ public class Percolation {
     }
 
     public boolean percolates() {
-        return uf.connected(0, N * N + 1);
+        return uf.connected(N * N + 1, 0);
     }
 
     public static void main(String args[]) {
