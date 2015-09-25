@@ -7,13 +7,11 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private int[][] site;
     private int N;
-    WeightedQuickUnionUF uf;
+    private WeightedQuickUnionUF uf;
+    private WeightedQuickUnionUF uf2;
 
-    private int mapToId(int i, int j) {
-        return ((i-1) * N + j);
-    }
     public Percolation(int N) {
-        if (N <=0) {
+        if (N <= 0) {
             throw new IllegalArgumentException();
         }
         this.N = N;
@@ -23,6 +21,11 @@ public class Percolation {
                 site[i][j] = 0;
 
         uf = new WeightedQuickUnionUF(N * N + 2);
+        uf2 = new WeightedQuickUnionUF(N * N + 2);
+    }
+
+    private int mapToId(int i, int j) {
+        return ((i-1) * N + j);
     }
 
     public void open(int i, int j) {
@@ -36,6 +39,7 @@ public class Percolation {
 
         if (i == 1) {
             uf.union(p, 0);
+            uf2.union(p, 0);
         }
 
         if (i == N) {
@@ -45,21 +49,25 @@ public class Percolation {
         if ((j > 1) && isOpen(i, j - 1)) {
             q = mapToId(i, j - 1);
             uf.union(p, q);
+            uf2.union(p, q);
         }
 
         if ((j < N) && isOpen(i, j + 1)) {
             q = mapToId(i, j + 1);
             uf.union(p, q);
+            uf2.union(p, q);
         }
 
         if ((i > 1) && isOpen(i - 1, j)) {
             q = mapToId(i - 1, j);
             uf.union(p, q);
+            uf2.union(p, q);
         }
 
         if ((i < N) && isOpen(i + 1, j)) {
             q = mapToId(i + 1, j);
             uf.union(p, q);
+            uf2.union(p, q);
         }
     }
 
@@ -77,14 +85,14 @@ public class Percolation {
         }
 
         int p = mapToId(i, j);
-        return uf.connected(p, 0);
+        return (uf.connected(p, 0) && uf2.connected(p, 0));
     }
 
     public boolean percolates() {
         return uf.connected(N * N + 1, 0);
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         Percolation foo = new Percolation(5);
 
         System.out.println("isOpen [3, 4]: " + foo.isOpen(3, 4));
